@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Google Sans', Arial, sans-serif;
+      font-size: 13px;
+      color: #333;
+      background: #fff;
+    }
+    .header {
+      background: #1a73e8;
+      color: white;
+      padding: 14px 18px;
+      margin-bottom: 0;
+    }
+    .header h2 { font-size: 15px; font-weight: 600; }
+    .header p  { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+    .body { padding: 16px 18px; }
+    .candidate-card {
+      background: #f0f4ff;
+      border-left: 3px solid #1a73e8;
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+    }
+    .candidate-card .cname { font-weight: 700; font-size: 14px; color: #1a1a1a; }
+    .candidate-card .cinfo { font-size: 12px; color: #555; margin-top: 2px; }
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #888;
+      margin: 14px 0 8px;
+    }
+    label { display: block; font-weight: 600; color: #444; margin-bottom: 4px; font-size: 12px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid #dde;
+      border-radius: 4px;
+      padding: 7px 9px;
+      font-size: 13px;
+      color: #333;
+      background: #fff;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    input:focus, select:focus { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.15); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid2 > div input, .grid2 > div select { margin-bottom: 0; }
+    .checkbox-row {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px; cursor: pointer;
+    }
+    .checkbox-row input { width: auto; margin: 0; cursor: pointer; }
+    .checkbox-row span { font-size: 12px; color: #555; }
+    .footer { padding: 10px 18px 14px; border-top: 1px solid #eee; background: #fafafa; }
+    .btn-row { display: flex; justify-content: flex-end; gap: 8px; }
+    .btn {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+    .btn-primary  { background: #1a73e8; color: white; }
+    .btn-secondary{ background: #f1f3f4; color: #444; border: 1px solid #ddd; }
+    .btn:hover    { opacity: 0.88; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .msg {
+      margin: 0 18px 12px;
+      padding: 9px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      display: none;
+    }
+    .msg.success { background: #e6f4ea; color: #1e7e34; border: 1px solid #b7dfbe; }
+    .msg.error   { background: #fce8e6; color: #c62828; border: 1px solid #f5c6c6; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h2>📧 Send Interview Invitation</h2>
+  <p>Customize the interview details before sending</p>
+</div>
+
+<div class="body">
+
+  <div class="candidate-card">
+    <div class="cname"><?= data.name ?></div>
+    <div class="cinfo"><?= data.position ?> &nbsp;·&nbsp; YSE <?= data.branch ?></div>
+  </div>
+
+  <div class="section-label">Interview Schedule</div>
+
+  <div class="grid2">
+    <div>
+      <label>Day of Week *</label>
+      <select id="interviewDay">
+        <option>Sunday</option><option>Monday</option><option>Tuesday</option>
+        <option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option>
+      </select>
+    </div>
+    <div>
+      <label>Interview Date *</label>
+      <input type="date" id="interviewDate">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label>Start Time *</label>
+      <input type="time" id="interviewTime" value="20:00">
+    </div>
+    <div>
+      <label>End Time *</label>
+      <input type="time" id="interviewEndTime" value="20:30">
+    </div>
+  </div>
+
+  <label>Time Zone</label>
+  <select id="timezone">
+    <option value="Asia/Yangon">Asia/Yangon (MMT, UTC+6:30)</option>
+    <option value="Asia/Singapore">Asia/Singapore (SGT, UTC+8)</option>
+    <option value="Asia/Bangkok">Asia/Bangkok (ICT, UTC+7)</option>
+    <option value="America/Los_Angeles">America/Los_Angeles (PST/PDT)</option>
+    <option value="America/New_York">America/New_York (EST/EDT)</option>
+  </select>
+
+  <div class="section-label">Google Meet Details</div>
+
+  <label>Google Meet Link *</label>
+  <input type="url" id="meetLink" placeholder="meet.google.com/xxx-xxxx-xxx">
+
+  <label>Reply Deadline *  <span style="font-weight:400;color:#888">(e.g. March 8, 2026, at 5:00 p.m.)</span></label>
+  <input type="text" id="replyDeadline" placeholder="March 8, 2026, at 5:00 p.m.">
+
+  <div class="section-label">Options</div>
+  <label class="checkbox-row">
+    <input type="checkbox" id="ccHr" checked>
+    <span>CC the YSE HR inbox (<?= config.HR_EMAIL ?>)</span>
+  </label>
+
+</div>
+
+<div id="successMsg" class="msg success">✅ Interview invitation sent successfully!</div>
+<div id="errorMsg"   class="msg error"></div>
+
+<div class="footer">
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="google.script.host.close()">Cancel</button>
+    <button class="btn btn-primary" id="sendBtn" onclick="doSend()">Send Invitation →</button>
+  </div>
+</div>
+
+<script>
+  var MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+
+  function fmtDate(isoDate) {
+    // isoDate = "2026-03-08"  →  "March 8, 2026"
+    var parts = isoDate.split('-');
+    var d = parseInt(parts[2], 10);
+    return MONTHS[parseInt(parts[1],10)-1] + ' ' + d + ', ' + parts[0];
+  }
+
+  function fmtTime(t) {
+    // t = "20:00"  →  "8:00 pm"
+    var h = parseInt(t.split(':')[0], 10);
+    var m = t.split(':')[1];
+    var ampm = h >= 12 ? 'pm' : 'am';
+    var hr   = h % 12 || 12;
+    return hr + ':' + m + ' ' + ampm;
+  }
+
+  function doSend() {
+    var date      = document.getElementById('interviewDate').value;
+    var time      = document.getElementById('interviewTime').value;
+    var endTime   = document.getElementById('interviewEndTime').value;
+    var meetLink  = document.getElementById('meetLink').value.trim();
+    var deadline  = document.getElementById('replyDeadline').value.trim();
+
+    // Basic validation
+    if (!date || !time || !endTime || !meetLink || !deadline) {
+      show('errorMsg', '⚠️ Please fill in all required fields before sending.');
+      return;
+    }
+
+    var btn = document.getElementById('sendBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+    hide('errorMsg');
+
+    var formData = {
+      row:            <?= data.row ?>,
+      position:       '<?= data.position.replace(/'/g,"\\'")?> ',
+      interviewDay:   document.getElementById('interviewDay').value,
+      interviewDate:  fmtDate(date),
+      interviewTime:  fmtTime(time),
+      interviewEndTime: fmtTime(endTime),
+      timezone:       document.getElementById('timezone').value,
+      meetLink:       meetLink,
+      replyDeadline:  deadline,
+      ccHr:           document.getElementById('ccHr').checked,
+    };
+
+    google.script.run
+      .withSuccessHandler(function() {
+        show('successMsg');
+        btn.textContent = '✓ Sent!';
+        setTimeout(function(){ google.script.host.close(); }, 1800);
+      })
+      .withFailureHandler(function(err) {
+        show('errorMsg', '❌ ' + err.message);
+        btn.disabled    = false;
+        btn.textContent = 'Send Invitation →';
+      })
+      .sendInterviewEmail(formData);
+  }
+
+  function show(id, msg) {
+    var el = document.getElementById(id);
+    if (msg) el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function hide(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+</script>
+</body>
+</html>
