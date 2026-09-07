@@ -25,7 +25,7 @@ const HR_CONFIG = {
     DEPARTMENT:                 4,   // D
     EMAIL:                      5,   // E
     BRANCH:                     6,   // F
-    // Columns 7–10: Interviewer scores (Seint, Kaung Khant, Chan, Noe)
+    // Columns 7–10: Interviewer scores (X, Y, Z)
     FINAL:                      11,  // K
     INTERVIEW_ASSIGNED_TO:      12,  // L
     INTERVIEW_INVITATION_STATUS:13,  // M  <- Trigger 1: type "Sent"
