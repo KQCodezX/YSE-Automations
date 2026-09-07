@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Google Sans', Arial, sans-serif; font-size: 13px; color: #333; background: #fff; }
+    .header { background: #0f9d58; color: white; padding: 14px 18px; }
+    .header h2 { font-size: 15px; font-weight: 600; }
+    .header p  { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+    .body { padding: 16px 18px; }
+    .candidate-card { background: #f0faf5; border-left: 3px solid #0f9d58; border-radius: 4px; padding: 10px 12px; margin-bottom: 14px; }
+    .candidate-card .cname { font-weight: 700; font-size: 14px; }
+    .candidate-card .cinfo { font-size: 12px; color: #555; margin-top: 2px; }
+    .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #888; margin: 14px 0 8px; }
+    label { display: block; font-weight: 600; color: #444; margin-bottom: 4px; font-size: 12px; }
+    input, select, textarea { width: 100%; border: 1px solid #dde; border-radius: 4px; padding: 7px 9px; font-size: 13px; color: #333; background: #fff; margin-bottom: 12px; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: #0f9d58; box-shadow: 0 0 0 2px rgba(15,157,88,0.15); }
+    textarea { resize: vertical; min-height: 60px; font-family: inherit; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid2 > div input { margin-bottom: 0; }
+    .checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; cursor: pointer; }
+    .checkbox-row input { width: auto; margin: 0; }
+    .checkbox-row span { font-size: 12px; color: #555; }
+    .info-box { background: #fffde7; border: 1px solid #ffe082; border-radius: 4px; padding: 9px 11px; font-size: 11px; color: #795548; margin-bottom: 12px; line-height: 1.5; }
+    .footer { padding: 10px 18px 14px; border-top: 1px solid #eee; background: #fafafa; }
+    .btn-row { display: flex; justify-content: flex-end; gap: 8px; }
+    .btn { padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; }
+    .btn-primary  { background: #0f9d58; color: white; }
+    .btn-secondary{ background: #f1f3f4; color: #444; border: 1px solid #ddd; }
+    .btn:hover { opacity: 0.88; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .msg { margin: 0 18px 12px; padding: 9px 12px; border-radius: 4px; font-size: 12px; display: none; }
+    .msg.success { background: #e6f4ea; color: #1e7e34; border: 1px solid #b7dfbe; }
+    .msg.error   { background: #fce8e6; color: #c62828; border: 1px solid #f5c6c6; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h2>📄 Send Offer Letter</h2>
+  <p>Customize offer details before sending</p>
+</div>
+
+<div class="body">
+
+  <div class="candidate-card">
+    <div class="cname"><?= data.name ?></div>
+    <div class="cinfo"><?= data.position ?> &nbsp;·&nbsp; YSE <?= data.branch ?></div>
+    <div class="cinfo">✉️ <?= data.email ?></div>
+  </div>
+
+  <div class="section-label">Offer Details</div>
+
+  <label>Position Offered *</label>
+  <input type="text" id="position" value="<?= data.position ?>">
+
+  <label>Branch *</label>
+  <input type="text" id="branch" value="<?= data.branch ?>">
+
+  <div class="grid2">
+    <div>
+      <label>Employment Start Date *</label>
+      <input type="date" id="startDate">
+    </div>
+    <div>
+      <label>Letter Date *</label>
+      <input type="date" id="letterDate">
+    </div>
+  </div>
+
+  <label>Reply Deadline *  <span style="font-weight:400;color:#888">(e.g. March 19, 2026, at 12:00 p.m.)</span></label>
+  <input type="text" id="replyDeadline" placeholder="March 19, 2026, at 12:00 p.m.">
+
+  <div class="section-label">Offer Letter PDF Attachment</div>
+
+  <div class="info-box">
+    💡 To auto-generate the PDF offer letter, you must first set up a Google Docs template
+    and paste its ID into <strong>HR_CONFIG.DRIVE_FILES.OFFER_LETTER_TEMPLATE</strong> in Code.gs.
+    See the setup guide for instructions.
+  </div>
+
+  <label class="checkbox-row">
+    <input type="checkbox" id="attachPdf" checked>
+    <span>Generate &amp; attach PDF offer letter (requires template setup)</span>
+  </label>
+
+  <div class="section-label">Options</div>
+  <label class="checkbox-row">
+    <input type="checkbox" id="ccHr" checked>
+    <span>CC the YSE HR inbox (<?= config.HR_EMAIL ?>)</span>
+  </label>
+
+</div>
+
+<div id="successMsg" class="msg success">✅ Offer letter sent successfully!</div>
+<div id="errorMsg"   class="msg error"></div>
+
+<div class="footer">
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="google.script.host.close()">Cancel</button>
+    <button class="btn btn-primary" id="sendBtn" onclick="doSend()">Send Offer Letter →</button>
+  </div>
+</div>
+
+<script>
+  var MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+
+  // Set today's date as default for letterDate
+  window.onload = function() {
+    var today = new Date();
+    var iso = today.getFullYear() + '-' +
+              String(today.getMonth()+1).padStart(2,'0') + '-' +
+              String(today.getDate()).padStart(2,'0');
+    document.getElementById('letterDate').value = iso;
+  };
+
+  function fmtDate(isoDate) {
+    var parts = isoDate.split('-');
+    return MONTHS[parseInt(parts[1],10)-1] + ' ' + parseInt(parts[2],10) + ', ' + parts[0];
+  }
+
+  function doSend() {
+    var position     = document.getElementById('position').value.trim();
+    var branch       = document.getElementById('branch').value.trim();
+    var startDate    = document.getElementById('startDate').value;
+    var letterDate   = document.getElementById('letterDate').value;
+    var replyDeadline= document.getElementById('replyDeadline').value.trim();
+
+    if (!position || !branch || !startDate || !letterDate || !replyDeadline) {
+      show('errorMsg', '⚠️ Please fill in all required fields before sending.');
+      return;
+    }
+
+    var btn = document.getElementById('sendBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+    hide('errorMsg');
+
+    var formData = {
+      row:          <?= data.row ?>,
+      position:     position,
+      branch:       branch,
+      startDate:    fmtDate(startDate),
+      letterDate:   fmtDate(letterDate),
+      replyDeadline: replyDeadline,
+      attachPdf:    document.getElementById('attachPdf').checked,
+      ccHr:         document.getElementById('ccHr').checked,
+    };
+
+    google.script.run
+      .withSuccessHandler(function() {
+        show('successMsg');
+        btn.textContent = '✓ Sent!';
+        setTimeout(function(){ google.script.host.close(); }, 1800);
+      })
+      .withFailureHandler(function(err) {
+        show('errorMsg', '❌ ' + err.message);
+        btn.disabled    = false;
+        btn.textContent = 'Send Offer Letter →';
+      })
+      .sendOfferEmail(formData);
+  }
+
+  function show(id, msg) {
+    var el = document.getElementById(id);
+    if (msg) el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function hide(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+</body>
+</html>

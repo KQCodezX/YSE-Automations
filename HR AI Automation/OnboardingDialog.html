@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Google Sans', Arial, sans-serif; font-size: 13px; color: #333; background: #fff; }
+    .header { background: #9c27b0; color: white; padding: 14px 18px; }
+    .header h2 { font-size: 15px; font-weight: 600; }
+    .header p  { font-size: 11px; opacity: 0.85; margin-top: 2px; }
+    .body { padding: 16px 18px; }
+    .candidate-card { background: #fdf3ff; border-left: 3px solid #9c27b0; border-radius: 4px; padding: 10px 12px; margin-bottom: 14px; }
+    .candidate-card .cname { font-weight: 700; font-size: 14px; }
+    .candidate-card .cinfo { font-size: 12px; color: #555; margin-top: 2px; }
+    .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #888; margin: 14px 0 8px; }
+    label { display: block; font-weight: 600; color: #444; margin-bottom: 4px; font-size: 12px; }
+    input, select { width: 100%; border: 1px solid #dde; border-radius: 4px; padding: 7px 9px; font-size: 13px; color: #333; background: #fff; margin-bottom: 12px; outline: none; }
+    input:focus, select:focus { border-color: #9c27b0; box-shadow: 0 0 0 2px rgba(156,39,176,0.15); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid2 > div input { margin-bottom: 0; }
+    .checkbox-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; cursor: pointer; }
+    .checkbox-row input { width: auto; margin: 0; }
+    .checkbox-row span { font-size: 12px; color: #555; }
+    .info-box { background: #fffde7; border: 1px solid #ffe082; border-radius: 4px; padding: 9px 11px; font-size: 11px; color: #795548; margin-bottom: 12px; line-height: 1.6; }
+    .attachments-list { font-size: 12px; color: #555; margin-bottom: 12px; line-height: 1.8; }
+    .attachments-list span { display: inline-block; background: #f1f3f4; border-radius: 3px; padding: 2px 7px; margin-right: 4px; margin-bottom: 4px; border: 1px solid #ddd; }
+    .footer { padding: 10px 18px 14px; border-top: 1px solid #eee; background: #fafafa; }
+    .btn-row { display: flex; justify-content: flex-end; gap: 8px; }
+    .btn { padding: 8px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; }
+    .btn-primary  { background: #9c27b0; color: white; }
+    .btn-secondary{ background: #f1f3f4; color: #444; border: 1px solid #ddd; }
+    .btn:hover { opacity: 0.88; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .msg { margin: 0 18px 12px; padding: 9px 12px; border-radius: 4px; font-size: 12px; display: none; }
+    .msg.success { background: #e6f4ea; color: #1e7e34; border: 1px solid #b7dfbe; }
+    .msg.error   { background: #fce8e6; color: #c62828; border: 1px solid #f5c6c6; }
+    hr { border: none; border-top: 1px solid #eee; margin: 4px 0 14px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h2>📦 Send Onboarding Package</h2>
+  <p>Review and customize before sending</p>
+</div>
+
+<div class="body">
+
+  <div class="candidate-card">
+    <div class="cname"><?= data.name ?></div>
+    <div class="cinfo"><?= data.position ?> &nbsp;·&nbsp; YSE <?= data.branch ?></div>
+    <div class="cinfo">✉️ <?= data.email ?></div>
+  </div>
+
+  <div class="section-label">YSE Account Credentials</div>
+
+  <div class="grid2">
+    <div>
+      <label>YSE Email Address *</label>
+      <input type="email" id="yseEmail" placeholder="firstname@ysenpo.org">
+    </div>
+    <div>
+      <label>Temporary Password *</label>
+      <input type="text" id="ysePassword" value="Changeme">
+    </div>
+  </div>
+
+  <div class="section-label">Employment Details</div>
+
+  <div class="grid2">
+    <div>
+      <label>Employment Start Date *</label>
+      <input type="date" id="startDate">
+    </div>
+    <div>
+      <label>Reply Deadline Date *</label>
+      <input type="date" id="replyDate">
+    </div>
+  </div>
+
+  <label>Reply Deadline Time &amp; Day  <span style="font-weight:400;color:#888">(e.g. Friday at 12:00 p.m.)</span></label>
+  <input type="text" id="replyTime" placeholder="Friday at 12:00 p.m.">
+
+  <div class="section-label">Supervisor Information  <span style="font-weight:400;text-transform:none;letter-spacing:0;">(for the Onboarding Packet PDF)</span></div>
+
+  <div class="grid2">
+    <div>
+      <label>Supervisor Name</label>
+      <input type="text" id="supervisorName" placeholder="e.g. Gandamar Kyaw">
+    </div>
+    <div>
+      <label>Supervisor Position</label>
+      <input type="text" id="supervisorPosition" placeholder="e.g. Executive Director (YGN)">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label>Supervisor Phone</label>
+      <input type="tel" id="supervisorPhone" placeholder="+95 09 xxx xxx xxx">
+    </div>
+    <div>
+      <label>Supervisor Email</label>
+      <input type="email" id="supervisorEmail" placeholder="name@ysenpo.org">
+    </div>
+  </div>
+
+  <div class="section-label">Attachments</div>
+
+  <div class="attachments-list">
+    Documents that will be attached:
+    <br>
+    <span>📘 YSE Employee Handbook.pdf</span>
+    <span>📜 YSE Bylaws.pdf</span>
+    <span>✍️ Acknowledgement of Receipt.pdf</span>
+    <span>📋 Onboarding Packet (personalized).pdf</span>
+  </div>
+
+  <div class="info-box">
+    💡 Attachments require Google Drive file IDs to be set in <strong>Code.gs</strong> under
+    <code>HR_CONFIG.DRIVE_FILES</code>. See the setup guide for step-by-step instructions.
+  </div>
+
+  <div class="section-label">Options</div>
+  <label class="checkbox-row">
+    <input type="checkbox" id="ccHr" checked>
+    <span>CC the YSE HR inbox (<?= config.HR_EMAIL ?>)</span>
+  </label>
+
+</div>
+
+<div id="successMsg" class="msg success">✅ Onboarding package sent successfully!</div>
+<div id="errorMsg"   class="msg error"></div>
+
+<div class="footer">
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="google.script.host.close()">Cancel</button>
+    <button class="btn btn-primary" id="sendBtn" onclick="doSend()">Send Package →</button>
+  </div>
+</div>
+
+<script>
+  var MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+  var DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  function fmtDate(isoDate) {
+    var parts = isoDate.split('-');
+    return MONTHS[parseInt(parts[1],10)-1] + ' ' + parseInt(parts[2],10) + ', ' + parts[0];
+  }
+
+  function getDayName(isoDate) {
+    var d = new Date(isoDate + 'T00:00:00');
+    return DAYS[d.getDay()];
+  }
+
+  function doSend() {
+    var yseEmail   = document.getElementById('yseEmail').value.trim();
+    var ysePwd     = document.getElementById('ysePassword').value.trim();
+    var startDate  = document.getElementById('startDate').value;
+    var replyDate  = document.getElementById('replyDate').value;
+    var replyTime  = document.getElementById('replyTime').value.trim();
+
+    if (!yseEmail || !ysePwd || !startDate || !replyDate || !replyTime) {
+      show('errorMsg', '⚠️ Please fill in all required fields before sending.');
+      return;
+    }
+
+    var btn = document.getElementById('sendBtn');
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+    hide('errorMsg');
+
+    var replyDeadline = fmtDate(replyDate) + ', ' + getDayName(replyDate) + ' at ' + replyTime.replace('at ','').replace(' at ','');
+    // e.g. "March 20, 2026, Friday at 12:00 p.m."
+
+    var formData = {
+      row:               <?= data.row ?>,
+      yseEmail:          yseEmail,
+      ysePassword:       ysePwd,
+      startDate:         fmtDate(startDate),
+      replyDeadline:     replyDeadline,
+      supervisorName:    document.getElementById('supervisorName').value.trim(),
+      supervisorPosition:document.getElementById('supervisorPosition').value.trim(),
+      supervisorPhone:   document.getElementById('supervisorPhone').value.trim(),
+      supervisorEmail:   document.getElementById('supervisorEmail').value.trim(),
+      ccHr:              document.getElementById('ccHr').checked,
+    };
+
+    google.script.run
+      .withSuccessHandler(function() {
+        show('successMsg');
+        btn.textContent = '✓ Sent!';
+        setTimeout(function(){ google.script.host.close(); }, 1800);
+      })
+      .withFailureHandler(function(err) {
+        show('errorMsg', '❌ ' + err.message);
+        btn.disabled    = false;
+        btn.textContent = 'Send Package →';
+      })
+      .sendOnboardingEmail(formData);
+  }
+
+  function show(id, msg) {
+    var el = document.getElementById(id);
+    if (msg) el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function hide(id) { document.getElementById(id).style.display = 'none'; }
+</script>
+</body>
+</html>
