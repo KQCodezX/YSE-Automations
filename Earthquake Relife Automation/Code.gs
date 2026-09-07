@@ -68,7 +68,7 @@ function onFormSubmit(e) {
     GmailApp.sendEmail(email, subject, emailBody, {
       htmlBody: emailBody.replace(/\n/g, '<br>'), // Format as HTML
       attachments: attachments,
-      bcc: 'yse.hr@ysenpo.org, hhtet@ysenpo.org'
+      bcc: 'X@gmail.com, X@gmail.com'
     });
 
     // Cleanup
