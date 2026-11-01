@@ -1,1 +1,1 @@
-# YSE-AI-Automations
+# YSE-Automations
